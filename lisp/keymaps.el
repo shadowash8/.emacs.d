@@ -157,6 +157,8 @@
   (evil-define-key 'normal 'global (kbd "<leader> o r i") 'org-roam-node-insert)
   (evil-define-key 'normal 'global (kbd "<leader> o r g") 'org-roam-graph)
   (evil-define-key 'normal 'global (kbd "<leader> o r c") 'org-roam-capture)
+  (evil-define-key 'normal 'global (kbd "<leader> o r d t") 'org-roam-dailies-goto-today)
+  (evil-define-key 'normal 'global (kbd "<leader> o r d c") 'org-roam-dailies-capture-date)
 
   ;; ORG LOCAL LEADER (SPC m)
   (with-eval-after-load 'org
@@ -249,6 +251,8 @@
     "SPC o r i" "insert node"
     "SPC o r g" "graph"
     "SPC o r c" "capture node"
+    "SPC o r d t" "dailies today"
+    "SPC o r d c" "dailies capture"
 
     ;; Local leader (SPC m)
     "SPC m" "local-leader"
