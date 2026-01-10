@@ -65,8 +65,15 @@
   (org-roam-db-autosync-mode)
 
   ;; Optional: org-roam-protocol
-  (require 'org-roam-protocol))
+  (require 'org-roam-protocol)
 
+  ;; Dailies Configuration
+  (setq org-roam-dailies-capture-templates
+      '(("d" "default" plain
+         (file "templates/dailies.org")
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n")
+         :unnarrowed t))))
 
 ;; ORG-POMODORO
 (use-package org-pomodoro
