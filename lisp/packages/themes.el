@@ -18,8 +18,11 @@
 (use-package minimal-theme
   :straight (minimal-theme :type git :host github :repo "shadowash8/emacs-minimal-theme"))
 
-(load-file "~/.config/colors/minimal-matugen-theme.el")
-(load-theme 'minimal-matugen t)
+(if (file-exists-p "~/.config/colors/minimal-matugen-theme.el")
+    (progn
+      (load-file "~/.config/colors/minimal-matugen-theme.el")
+      (load-theme 'minimal-matugen t))
+  (load-theme 'minimal-black t))
 
 (provide 'themes)
 ;;; themes.el ends here
