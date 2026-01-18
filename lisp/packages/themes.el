@@ -18,29 +18,8 @@
 (use-package minimal-theme
   :straight (minimal-theme :type git :host github :repo "shadowash8/emacs-minimal-theme"))
 
-;; Load theme based on window manager
-(defun get-current-wm ()
-  "Detect the current window manager."
-  (let ((desktop-env (getenv "XDG_CURRENT_DESKTOP"))
-        (session-type (getenv "DESKTOP_SESSION")))
-    (cond
-     ((or (string-match-p "hyprland" (or desktop-env ""))
-          (string-match-p "hyprland" (or session-type "")))
-      'hyprland)
-     ((or (string-match-p "dwm" (or desktop-env ""))
-          (string-match-p "dwm" (or session-type ""))
-          (and (executable-find "dwm") 
-               (string-match-p "dwm" (shell-command-to-string "ps -e | grep dwm"))))
-      'dwm)
-     (t 'unknown))))
-
 (load-file "~/.config/colors/minimal-matugen-theme.el")
-
-;; Load appropriate theme based on WM
-(pcase (get-current-wm)
-  ('hyprland (load-theme 'minimal-matugen t))
-  ('dwm (load-theme 'minimal-black t))
-  (_ (load-theme 'minimal-matugen t))) ;; Default to matugen if unknown
+(load-theme 'minimal-matugen t)
 
 (provide 'themes)
 ;;; themes.el ends here
