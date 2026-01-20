@@ -1,0 +1,147 @@
+;;; xresources-theme.el --- Minimal Xresources theme -*- lexical-binding: t; -*-
+
+(defun xres-get (name)
+  "Read color NAME from Xresources, checking for Pywal's wildcard prefix."
+  (or (x-get-resource name "")
+      (x-get-resource (concat "*" name) "")))
+
+(deftheme xresources "Minimal dark theme pulling from Xresources.")
+
+(let* ((class '((class color) (min-colors 89)))
+       ;; --- Variables Mapped from Matugen Layout ---
+       (background (xres-get "background"))
+       (foreground (xres-get "foreground"))
+       (cursor     (xres-get "cursor"))
+       (border     (xres-get "color8"))  ;; Surface variant / Gray
+       (failure    (xres-get "color1"))  ;; Error / Red
+
+       (region     (xres-get "color8"))  ;; Surface container high
+       (comment    (xres-get "color8"))  ;; Outline / Gray
+       (comment-delimiter comment)
+       (string     (xres-get "color2"))  ;; Tertiary / Green
+       (org-background background)
+
+       (modeline-background          (xres-get "background"))
+       (modeline-foreground          (xres-get "foreground"))
+       (modeline-background-active   (xres-get "color8"))
+       (modeline-foreground-active   (xres-get "foreground"))
+       (modeline-background-inactive (xres-get "background"))
+       (modeline-foreground-inactive comment)
+       
+       (tabbar-background            modeline-background)
+       (tabbar-foreground            modeline-foreground)
+       (tabbar-background-active     modeline-background-active)
+       (tabbar-foreground-active     modeline-foreground-active)
+       (tabbar-background-inactive   modeline-background-inactive)
+       (tabbar-foreground-inactive   modeline-foreground-inactive)
+
+       (hl-background region)
+       (hl-face-background nil)
+       (minibuffer cursor)
+
+       ;; ANSI slots
+       (color-red     (xres-get "color1"))
+       (color-green   (xres-get "color2"))
+       (color-yellow  (xres-get "color3"))
+       (color-blue    (xres-get "color4"))
+       (color-magenta (xres-get "color5"))
+       (color-cyan    (xres-get "color6"))
+       (color-white   (xres-get "color7")))
+
+  (setq fci-rule-color comment)
+  
+  (custom-theme-set-faces
+   'xresources
+
+   ;; --- Basic Stuff ---
+   `(default ((,class (:background ,background :foreground ,foreground))))
+   `(cursor ((,class (:background ,cursor :inverse-video t))))
+   `(vertical-border ((,class (:foreground ,border))))
+   `(fringe ((,class (:background ,background :foreground ,comment))))
+
+   ;; --- Minibuffer ---
+   `(minibuffer-prompt ((,class (:foreground ,minibuffer :weight bold))))
+
+   ;; --- Region ---
+   `(region ((,class (:background ,region))))
+   `(secondary-selection ((,class (:background ,region))))
+
+   ;; --- Syntax Faces ---
+   `(font-lock-builtin-face ((,class (:foreground ,color-red :weight bold))))
+   `(font-lock-constant-face ((,class (:foreground ,color-blue :weight bold))))
+   `(font-lock-keyword-face ((,class (:foreground ,color-cyan :weight bold))))
+   `(font-lock-type-face ((,class (:foreground ,foreground :slant italic))))
+   `(font-lock-function-name-face ((,class (:foreground ,color-red :weight bold))))
+   `(font-lock-variable-name-face ((,class (:foreground ,foreground))))
+   `(font-lock-comment-delimiter-face ((,class (:foreground ,comment-delimiter))))
+   `(font-lock-comment-face ((,class (:foreground ,comment))))
+   `(font-lock-doc-face ((,class (:inherit (font-lock-comment-face)))))
+   `(font-lock-string-face ((,class (:foreground ,string))))
+
+   ;; --- Isearch ---
+   `(isearch ((,class (:foreground ,foreground :background ,region :weight normal))))
+   `(isearch-fail ((,class (:foreground ,failure :bold t))))
+   `(lazy-highlight ((,class (:foreground ,foreground :background ,region))))
+
+   ;; --- IDO ---
+   `(ido-subdir ((,class (:foreground ,foreground :weight bold))))
+   `(ido-only-match ((,class (:foreground ,foreground :weight bold))))
+
+   ;; --- Paren Match ---
+   `(show-paren-match ((,class (:background ,region))))
+   `(show-paren-mismatch ((,class (:foreground ,failure :weight bold))))
+
+   ;; --- Modeline ---
+   `(mode-line
+     ((,class (:inverse-video nil :overline nil :underline nil
+               :foreground ,modeline-foreground-active
+               :background ,modeline-background-active :box nil))))
+   `(mode-line-buffer-id ((,class (:weight bold))))
+   `(mode-line-inactive
+     ((,class (:inverse-video nil :overline nil :underline nil
+               :foreground ,modeline-foreground
+               :background ,modeline-background :box nil))))
+
+   ;; --- Tabs ---
+   `(tab-bar ((t (:background ,tabbar-background :foreground ,tabbar-foreground :box nil))))
+   `(tab-line ((t (:background ,tabbar-background :foreground ,tabbar-foreground :box nil))))
+   `(tab-bar-tab ((t (:background ,tabbar-background-active :foreground ,tabbar-foreground-active :box nil))))
+
+   ;; --- HL-Line ---
+   `(hl-line ((,class (:background ,hl-background))))
+
+   ;; --- Org Mode ---
+   `(org-level-1 ((,class (:foreground ,color-red :weight bold))))
+   `(org-level-2 ((,class (:foreground ,color-magenta :weight bold))))
+   `(org-level-3 ((,class (:foreground ,color-yellow :weight bold))))
+   `(org-level-4 ((,class (:foreground ,color-blue :weight bold))))
+   `(org-level-5 ((,class (:foreground ,color-green :weight bold))))
+   `(org-level-6 ((,class (:foreground ,color-cyan :weight bold))))
+   `(org-level-7 ((,class (:foreground ,color-red :weight bold))))
+   `(org-level-8 ((,class (:foreground ,color-white :weight bold))))
+   `(org-document-title ((,class (:foreground ,foreground))))
+   `(org-link ((,class (:background ,org-background :foreground ,foreground :underline t))))
+   `(org-tag ((,class (:background ,org-background :foreground ,foreground))))
+   `(org-warning ((,class (:background ,region :foreground ,foreground :weight bold))))
+   `(org-todo ((,class (:background ,region :foreground ,foreground :weight bold))))
+   `(org-done ((,class (:background ,region :foreground ,foreground :weight bold))))
+   `(org-table ((,class (:background ,org-background))))
+   `(org-block ((,class (:background ,org-background))))
+   `(org-block-background ((,class (:background ,org-background :foreground ,foreground))))
+   `(org-block-begin-line ((,class (:background ,org-background :foreground ,comment-delimiter :weight bold))))
+   `(org-block-end-line ((,class (:background ,org-background :foreground ,comment-delimiter :weight bold))))
+
+   ;; --- Centaur Tabs ---
+   `(centaur-tabs-default ((t (:background ,tabbar-background :foreground ,tabbar-foreground :box nil))))
+   `(centaur-tabs-selected ((t (:background ,tabbar-background-active :foreground ,tabbar-foreground-active :box nil))))
+   `(centaur-tabs-unselected ((t (:background ,tabbar-background :foreground ,tabbar-foreground-inactive :box nil))))
+   `(centaur-tabs-selected-modified ((t (:background ,tabbar-background :foreground ,color-red :box nil))))
+   `(centaur-tabs-active-bar-face ((t (:background ,color-yellow :box nil))))
+   ))
+
+;;;###autoload
+(when (and (boundp 'custom-theme-load-path) load-file-name)
+  (add-to-list 'custom-theme-load-path
+               (file-name-as-directory (file-name-directory load-file-name))))
+
+(provide-theme 'xresources)
