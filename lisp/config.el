@@ -35,7 +35,7 @@
 
   :config
   ;; Fonts
-  (set-face-attribute 'default nil :family "Pragmasevka" :height 135)
+  (set-face-attribute 'default nil :family "Iosevka" :height 135)
 
   ;; Disable Scrollbar (Frame-alist)
   (setq default-frame-alist '((vertical-scroll-bars . nil)))
