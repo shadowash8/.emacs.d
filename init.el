@@ -28,9 +28,9 @@
 
 (require 'themes)       ;; theme setup
 (require 'editing)      ;; editing enhancements
-(require 'org-config)   ;; org + org-roam
-(require 'org-appearance) ;; org visuals (org-modern, bullets, etc.)
+(require 'org)          ;; org 
 (require 'ui)           ;; UI elements (modeline, dashboard, etc.)
+(require 'lsp)          ;; LSP and coding 
 
 (provide 'init)
 ;;; init.el ends here

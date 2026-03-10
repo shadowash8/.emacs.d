@@ -1,24 +1,30 @@
-;;; org-config.el --- Org and Org-roam configuration -*- lexical-binding: t; -*-
+;;; org.el --- Org configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Configuration for Org-mode and Org-roam in vanilla Emacs.
+;; Configuration and appearance for Org-mode and Org-roam in vanilla Emacs.
 
 ;;; Code:
 
 ;; ORG-MODE
 (straight-use-package 'org)
 
+(defvar org-read-date-minibuffer-local-map (make-sparse-keymap))
+(defvar org-mode-map (make-sparse-keymap))
+
 (use-package org
-  :defer t)
+  :ensure t
+  :straight t
+  :init
+  (setq org-directory "~/org"))
 
 (with-eval-after-load 'org
-  (setq org-directory "~/Documents/org/")
+  (setq org-directory "~/org/")
 
   (setq org-agenda-files (list
-                        "~/Documents/org/inbox.org"
-                        "~/Documents/org/personal.org"
-                        "~/Documents/org/school.org"
-                        "~/Documents/org/studies.org"))
+                        "~/org/inbox.org"
+                        "~/org/personal.org"
+                        "~/org/school.org"
+                        "~/org/studies.org"))
   
   ;; TODO keywords
   (setq org-todo-keywords
@@ -27,22 +33,22 @@
   ;; Capture templates
   (setq org-capture-templates
         '(("t" "Todo" entry
-           (file+headline "~/Documents/org/inbox.org" "Inbox")
+           (file+headline "~/org/inbox.org" "Inbox")
            "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?")
           ("a" "Appointment" entry
-           (file+headline "~/Documents/org/personal.org" "Appointments")
+           (file+headline "~/org/personal.org" "Appointments")
            "* %^{Event}\n%^{SCHEDULED}T\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?")
           ("p" "Project" entry
-           (file+headline "~/Documents/org/projects.org" "Projects")
+           (file+headline "~/org/projects.org" "Projects")
            "* PROJ %^{Project name}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n** TODO %?")
 		  ("c" "Chore" entry
-           (file+headline "~/Documents/org/personal.org" "Chore")
+           (file+headline "~/org/personal.org" "Chore")
            "* %^{Event}\n%^{SCHEDULED}T\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?")
           ("i" "Idea" entry
-           (file+headline "~/Documents/org/ideas.org" "Ideas")
+           (file+headline "~/org/ideas.org" "Ideas")
            "** IDEA %^{Idea}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?")
           ("n" "Note" entry
-           (file+headline "~/Documents/org/notes.org" "Inbox")
+           (file+headline "~/org/notes.org" "Inbox")
            "* [%<%Y-%m-%d %a>] %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?"
            :prepend t)))
 
@@ -55,7 +61,7 @@
   :ensure t
   :defer t
   :custom
-  (org-roam-directory (file-truename "~/Documents/org/notes/"))
+  (org-roam-directory (file-truename "~/org/notes/"))
   :config
   ;; Display template
   (setq org-roam-node-display-template
@@ -66,22 +72,15 @@
 
   ;; Optional: org-roam-protocol
   (require 'org-roam-protocol)
-
+  
   ;; Dailies Configuration
+  (setq org-roam-dailies-directory "~/org/daily/")
   (setq org-roam-dailies-capture-templates
       '(("d" "default" plain
          (file "templates/dailies.org")
          :target (file+head "%<%Y-%m-%d>.org"
                             "#+title: %<%Y-%m-%d>\n")
          :unnarrowed t))))
-
-;; ORG-POMODORO
-(use-package org-pomodoro
-  :ensure t
-  :config
-  (setq org-pomodoro-length 50)
-  (setq org-pomodoro-short-break-length 10)
-  (setq org-pomodoro-long-break-length 30))
 
 ;; HELPER FUNCTIONS
 (defun my/org-clock-get-time-string ()
@@ -107,6 +106,49 @@ Returns an empty string if no clock is running."
                  (my/org-clock-get-time-string))))
     ""))
 
-(provide 'org-config)
-;;; org-config.el ends here
+;;; ORG APPEARANCE
 
+;; Hide leading stars, pretty bullets
+(use-package org-modern
+  :ensure t
+  :hook (org-mode . org-modern-mode)
+  :custom
+  (org-modern-star nil)
+  (org-modern-hide-stars t)
+  (org-modern-block-name '("src" "quote"))
+  (org-modern-table nil)
+  (org-modern-ellipsis " ? "))
+
+;; Pretty bullets
+(use-package org-bullets-mode
+  :ensure org-bullets
+  :config
+  :hook org-mode)
+
+;; Indentation and bullets (pretty indentation lines)
+(use-package org-modern-indent
+  :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+  :hook
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize . org-modern-agenda))
+
+;; Enable number line even with org-indent
+(add-hook 'org-mode-hook
+          (lambda ()
+            (org-indent-mode 1)
+            (display-line-numbers-mode 1)))
+
+;; Org Appear
+(use-package org-appear
+  :ensure t
+  :commands (org-appear-mode)
+  :hook (org-mode . org-appear-mode)
+  :init
+  (setq org-hide-emphasis-markers t
+        org-appear-autoemphasis t
+        org-appear-autolinks t
+        org-appear-autosubmarkers t))
+
+
+(provide 'org)
+;;; org.el ends here

@@ -7,7 +7,7 @@
   (let* ((json-object-type 'hash-table)
          (json-key-type 'string)
          ;; Path to the generated color file
-         (colors-json (json-read-file "~/.cache/wal/colors.json"))
+         (colors-json (json-read-file "~/.cache/cwal/colors.json"))
          (colors-dict (gethash "colors" colors-json))
          (special-dict (gethash "special" colors-json)))
     (cond 

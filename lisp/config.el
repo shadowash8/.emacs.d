@@ -35,7 +35,7 @@
 
   :config
   ;; Fonts
-  (set-face-attribute 'default nil :family "Iosevka" :height 135)
+  (set-face-attribute 'default nil :family "Monospace" :height 135)
 
   ;; Disable Scrollbar (Frame-alist)
   (setq default-frame-alist '((vertical-scroll-bars . nil)))
@@ -86,7 +86,6 @@
      )))
 
 
-;;; DIRED
 (use-package dired
   :ensure nil
   :custom
@@ -94,7 +93,6 @@
   (dired-dwim-target t)
   (dired-kill-when-opening-new-dired-buffer t))
 
-;;; ISEARCH
 (use-package isearch
   :ensure nil
   :config
@@ -114,7 +112,6 @@
   (global-eldoc-mode))
 
 
-;;; FLYMAKE
 (use-package flymake
   :ensure nil
   :defer t
@@ -125,12 +122,13 @@
      (note "»" compilation-info))))
 
 
-;;; WHICH-KEY
 (use-package which-key
   :ensure nil
   :defer t
   :hook
   (after-init . which-key-mode))
+
+(use-package terminal-toggle)
 
 (provide 'config)
 ;;; config.el ends here

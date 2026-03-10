@@ -29,7 +29,7 @@
 (use-package evil-collection
   :ensure t
   :straight t
-  :after evil
+  :after (evil org)
   :custom (evil-collection-want-find-usages-bindings t)
   :config
   (evil-collection-init))
@@ -90,13 +90,12 @@
   (interactive)
   (find-file
    (completing-read "Find org file: "
-                    (directory-files-recursively "~/Documents/org" "\\.org$"))))
+                    (directory-files-recursively "~/org" "\\.org$"))))
 
 
 (with-eval-after-load 'evil
-  ;; Quit / neotree
-  (evil-define-key 'normal 'global (kbd "<leader> q") 'save-buffers-kill-terminal)
   (evil-define-key 'normal 'global (kbd "<leader> e") 'neotree-toggle)
+  (evil-define-key 'normal 'global (kbd "<leader> t") 'terminal-toggle)
 
   ;; FILES
   (evil-define-key 'normal 'global (kbd "<leader> w") 'save-buffer)
@@ -135,8 +134,10 @@
   (evil-define-key 'normal 'global (kbd "<leader> h k") 'describe-key)
 
   ;; TABS / WINDOWS
-  (evil-define-key 'normal 'global (kbd "] t") 'tab-next)
-  (evil-define-key 'normal 'global (kbd "[ t") 'tab-previous)
+  (evil-define-key 'normal 'global (kbd "<C-tab>") 'tab-next)
+  (evil-define-key 'normal 'global (kbd "<C-S-iso-lefttab>") 'tab-previous)
+  ;; Fallback for some systems if the above doesn't catch Shift-Tab:
+  (evil-define-key 'normal 'global (kbd "<C-S-tab>") 'tab-previous)
 
   ;; DIAGNOSTICS / FLYMAKE
   (evil-define-key 'normal 'global (kbd "] d") 'flymake-goto-next-error)
@@ -159,6 +160,14 @@
   (evil-define-key 'normal 'global (kbd "<leader> o r c") 'org-roam-capture)
   (evil-define-key 'normal 'global (kbd "<leader> o r d t") 'org-roam-dailies-goto-today)
   (evil-define-key 'normal 'global (kbd "<leader> o r d c") 'org-roam-dailies-capture-date)
+
+  ;; LSP
+  (evil-define-key 'normal 'global (kbd "g d") 'lsp-find-definition)
+  (evil-define-key 'normal 'global (kbd "g r") 'lsp-find-references)
+  (evil-define-key 'normal 'global (kbd "K") 'lsp-ui-doc-glance)
+  (evil-define-key 'normal 'global (kbd "<leader> l f") 'lsp-format-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader> l r") 'lsp-rename)
+  (evil-define-key 'normal 'global (kbd "<leader> l a") 'lsp-execute-code-action)
 
   ;; ORG LOCAL LEADER (SPC m)
   (with-eval-after-load 'org
