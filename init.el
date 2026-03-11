@@ -30,7 +30,6 @@
 (require 'editing)      ;; editing enhancements
 (require 'org)          ;; org 
 (require 'ui)           ;; UI elements (modeline, dashboard, etc.)
-(require 'lsp)          ;; LSP and coding 
 
 (provide 'init)
 ;;; init.el ends here
