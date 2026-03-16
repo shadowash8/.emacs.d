@@ -73,6 +73,13 @@
   ;; Optional: org-roam-protocol
   (require 'org-roam-protocol)
   
+  ;; Capture Templates
+  (setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :target (file+head "${slug}.org" ; <--- Change this line
+                            "#+title: ${title}\n#+created: %U\n")
+         :unnarrowed t)))
+
   ;; Dailies Configuration
   (setq org-roam-dailies-directory "~/org/daily/")
   (setq org-roam-dailies-capture-templates
