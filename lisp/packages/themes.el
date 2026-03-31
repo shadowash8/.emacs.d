@@ -2,18 +2,6 @@
 ;;; Commentary:
 ;; Theme setup for Emacs
 ;;; Code:
-;; Doom Themes
-(use-package doom-themes
-  :ensure t
-  :config
-;  (load-theme 'doom-tokyo-night t)
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (nerd-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
-
 ;; Minimal Themes
 (use-package minimal-theme
   :straight (minimal-theme :type git :host github :repo "shadowash8/emacs-minimal-theme"))
@@ -21,7 +9,7 @@
 ;; Xresources Theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
-(load-theme 'dank-emacs t)
+(load-theme 'xresources t)
 
 (defun my/reload-xresources-theme ()
   "Force Emacs to forget the theme and reload it from disk."
