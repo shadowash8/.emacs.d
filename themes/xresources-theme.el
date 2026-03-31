@@ -3,11 +3,11 @@
 (require 'json)
 
 (defun xres-get-json (name)
-  "Fetch a color from the Matugen/Wal JSON cache."
+  "Fetch a color from the Ashwal JSON cache."
   (let* ((json-object-type 'hash-table)
          (json-key-type 'string)
          ;; Path to the generated color file
-         (colors-json (json-read-file "~/.cache/cwal/colors.json"))
+         (colors-json (json-read-file "~/.cache/ashwal/colors.json"))
          (colors-dict (gethash "colors" colors-json))
          (special-dict (gethash "special" colors-json)))
     (cond 

@@ -31,8 +31,15 @@
   (scroll-bar-mode nil)
 
   :hook
-  (prog-mode . display-line-numbers-mode)
-
+  (prog-mode . global-display-line-numbers-mode)
+  ;; These disable them in specific modes
+  (dashboard-mode . my/disable-line-numbers)
+  (org-agenda-mode . my/disable-line-numbers)
+  (vterm-mode . my/disable-line-numbers)
+  (term-mode . my/disable-line-numbers)
+  (eshell-mode . my/disable-line-numbers)
+  (help-mode . my/disable-line-numbers)
+  
   :config
   ;; Fonts
   (set-face-attribute 'default nil :family "Monospace" :height 135)

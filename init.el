@@ -22,14 +22,15 @@
 
 ;; Modules
 (require 'packages)     ;; package.el / straight.el / use-package setup
-(require 'config)       ;; general settings
 (require 'functions)    ;; helper functions
+(require 'config)       ;; general settings
 (require 'keymaps)      ;; global + leader keymaps
 
 (require 'themes)       ;; theme setup
 (require 'editing)      ;; editing enhancements
 (require 'org)          ;; org 
 (require 'ui)           ;; UI elements (modeline, dashboard, etc.)
+(require 'lsp)          ;; LSP and coding
 
 (provide 'init)
 ;;; init.el ends here
