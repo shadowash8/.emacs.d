@@ -71,10 +71,5 @@
   :ensure t
   :init (global-flycheck-mode))
 
-;; Language support
-(use-package janet-ts-mode
-  :vc (:url "https://github.com/sogaiu/janet-ts-mode"
-       :rev :newest))
-
 (provide 'lsp)
 ;;; lsp.el ends here
