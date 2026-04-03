@@ -1,12 +1,11 @@
 #+TITLE: ashwin's emacs config
 #+OPTIONS: toc:2 num:nil
 
-[[./assets/img1.png]]        [[./assets/img2.png]]
-[[./assets/img3.png]] 
+
+| [[./assets/img1.png]] | [[./assets/img2.png]] | [[./assets/img3.png]] |
 
 * Overview
 This repository contains my personal Emacs configuration.  
-It is mainly focused on Org-mode and Org-roam functionality. It is structured for readability and modularity, and it is managed as a subdirectory of my larger =dotfiles= repo.
 
 The repo lives at:
 #+begin_src shell
@@ -17,13 +16,15 @@ The repo lives at:
 - Modular configuration (split across =lisp/= and =lisp/packages/=).
 - Package management with [[https://github.com/jwiegley/use-package][use-package]].
 - Custom evil keybindings, Org-mode setup.
-- Optimized for performance (GC tweaks, lazy loading).
+- Optimized for performance.
 - Theming and UI tweaks for a clean editing experience.
+- Mostly usable lsp support.
+- Automatic theme sync with xresources.
 
 * Installation
 Clone the repo into your home directory:
 #+begin_src shell
-git clone https://github.com/ashwinjadhav818/.emacs.d.git ~/.emacs.d
+git clone https://codeberg.org/shadowash8/.emacs.d.git ~/.emacs.d
 #+end_src
 
 * File Structure
@@ -32,14 +33,13 @@ git clone https://github.com/ashwinjadhav818/.emacs.d.git ~/.emacs.d
 ├── init.el          ;; Entry point
 └── lisp/            ;; Modular config
     ├── config.el
+    ├── functions.el
+    ├── keymaps.el
     ├── packages.el
     └── packages/
         ├── editing.el
-        ├── git.el
-        ├── keymaps.el
-        ├── misc.el
+        ├── lisp.el
         ├── org.el
-        ├── programming.el
         ├── themes.el
         └── ui.el
 #+end_src
