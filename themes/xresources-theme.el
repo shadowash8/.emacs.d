@@ -23,10 +23,10 @@
        (background (xres-get-json "background"))
        (foreground (xres-get-json "foreground"))
        (cursor     (xres-get-json "cursor"))
-       (border     (xres-get-json "color8")) 
+       (border     (xres-get-json "color2")) 
        (failure    (xres-get-json "color1"))
 
-       (region     (xres-get-json "color8"))
+       (region     (xres-get-json "color2"))
        (comment    (xres-get-json "color8"))
        (comment-delimiter comment)
        (string     (xres-get-json "color2"))
@@ -34,7 +34,7 @@
 
        (modeline-background          background)
        (modeline-foreground          foreground)
-       (modeline-background-active   (xres-get-json "color8"))
+       (modeline-background-active   (xres-get-json "color2"))
        (modeline-foreground-active   foreground)
        (modeline-background-inactive background)
        (modeline-foreground-inactive comment)
@@ -114,6 +114,8 @@
    `(tab-bar ((t (:background ,tabbar-background :foreground ,tabbar-foreground :box nil))))
    `(tab-line ((t (:background ,tabbar-background :foreground ,tabbar-foreground :box nil))))
    `(tab-bar-tab ((t (:background ,tabbar-background-active :foreground ,tabbar-foreground-active :box nil))))
+   `(tab-bar-tab-inactive ((t (:background ,tabbar-background-inactive :foreground ,tabbar-foreground-inactive :box nil))))
+   `(tab-bar-tab-ungrouped ((t (:background ,tabbar-background-inactive :foreground ,tabbar-foreground-inactive :box nil))))
 
    ;; --- HL-Line ---
    `(hl-line ((,class (:background ,hl-background))))
