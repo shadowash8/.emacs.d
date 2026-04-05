@@ -180,4 +180,9 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode)) ;; Enable preview in Embark collect mode.
 
+(use-package xdg-launcher
+  :straight '(xdg-launcher :host github :repo "emacs-exwm/xdg-launcher"))
+
 (provide 'ui)
+
+;;; ui.el ends here
