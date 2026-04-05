@@ -135,7 +135,5 @@
   :hook
   (after-init . which-key-mode))
 
-(use-package terminal-toggle)
-
 (provide 'config)
 ;;; config.el ends here

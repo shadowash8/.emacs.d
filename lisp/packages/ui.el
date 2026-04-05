@@ -117,39 +117,6 @@
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
-(use-package centaur-tabs
-  :straight t
-  :defer nil
-  :config
-  ;; Enable the tab bar
-  (centaur-tabs-mode t)
-
-  ;; Style and markers
-  (setq centaur-tabs-style "zigzag")
-  (setq centaur-tabs-set-bar 'under)
-  (setq x-underline-at-descent-line t)
-  (setq centaur-tabs-modified-marker "*")
-
-  ;; Enable icons
-  (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-icon-type 'nerd-icons)
-
-  ;; Grouping behavior
-  (setq centaur-tabs-group-by-projectile-project t)
-  (setq centaur-tabs-headline-match t)
-
-  "Hide centaur-tabs in the *dashboard* buffer."
-  (defun my/dashboard-hide-tabs ()
-  (when (string= (buffer-name) "*dashboard*")
-    (centaur-tabs-local-mode t)))
-
-  (add-hook 'dashboard-mode-hook #'my/dashboard-hide-tabs)
-
-
-  :bind
-  ("C-<tab>"   . centaur-tab-forward)
-  ("C-S-<tab>" . centaur-tabs-backward))
-
 (use-package vertico
   :ensure t
   :straight t

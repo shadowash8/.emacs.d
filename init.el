@@ -31,6 +31,7 @@
 (require 'org)          ;; org 
 (require 'ui)           ;; UI elements (modeline, dashboard, etc.)
 (require 'lsp)          ;; LSP and coding
+(require 'wm)           ;; emacs as a operating system
 
 (provide 'init)
 ;;; init.el ends here

@@ -95,7 +95,6 @@
 
 (with-eval-after-load 'evil
   (evil-define-key 'normal 'global (kbd "<leader> e") 'neotree-toggle)
-  (evil-define-key 'normal 'global (kbd "<leader> t") 'terminal-toggle)
 
   ;; FILES
   (evil-define-key 'normal 'global (kbd "<leader> w") 'save-buffer)
