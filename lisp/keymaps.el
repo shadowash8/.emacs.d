@@ -1,65 +1,16 @@
-;;; keymaps.el --- Doom-style Evil keybindings -*- lexical-binding: t; -*-
-
+;;; keymaps.el --- Meow setup  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; This file configures Evil mode, Evil-Collection, Evil-Surround,
-;; Evil-Matchit, and Doom-style SPC leader keybindings with Which-Key
-;; integration for descriptive labels.
+;; This is a helix or kakone stle keybinds setup
 
 ;;; Code:
-
-;; EVIL
-(use-package evil
-  :ensure t
-  :straight t
-  :init
-  (setq evil-want-integration t
-        evil-want-keybinding nil
-        evil-want-C-u-scroll t
-        evil-want-C-u-delete t
-        evil-want-fine-undo t)
-  :config
-  (evil-set-undo-system 'undo-tree)
-  (evil-mode 1)
-
-  ;; Set leader key as SPC like Doom
-  (evil-set-leader 'normal (kbd "SPC"))
-  (evil-set-leader 'visual (kbd "SPC")))
-
-;; EVIL COLLECTION
-(use-package evil-collection
-  :ensure t
-  :straight t
-  :after (evil org)
-  :custom (evil-collection-want-find-usages-bindings t)
-  :config
-  (evil-collection-init))
-
-;; EVIL SURROUND
-(use-package evil-surround
-  :ensure t
-  :straight t
-  :after evil-collection
-  :config
-  (global-evil-surround-mode 1))
-
-;; EVIL MATCHIT
-(use-package evil-matchit
-  :ensure t
-  :straight t
-  :after evil-collection
-  :config
-  (global-evil-matchit-mode 1))
-
-;; LEADER KEYBINDINGS
-(defun fuzzy-find-files-in-directory ()
+(defun studium/fuzzy-find-files-in-directory ()
   "Fuzzy find files in the current directory."
   (interactive)
-  (interactive)
   (find-file
-   (completing-read "Find org file: "
+   (completing-read "Find file: "
                     (directory-files-recursively "." ".*"))))
 
-(defun grep-current-directory ()
+(defun studium/grep-current-directory ()
   "Run ripgrep in the current directory."
   (interactive)
   (let ((default-directory (if (derived-mode-p 'dired-mode)
@@ -67,217 +18,239 @@
                              default-directory)))
     (consult-ripgrep default-directory)))
 
-(defun open-personal-config ()
-  "Fuzzy search and open a file in `~/.emacs.d`, ignoring specified folders."
+(defun studium/open-personal-config ()
+  "Fuzzy search and open a file in `~/.emacs.d`."
   (interactive)
   (let* ((config-dir "~/.emacs.d")
-         ;; Get all .el files, excluding specified directories
          (all-files (directory-files-recursively
-                      config-dir "\\.el$"
-                      nil ;; No depth limit
-                      (lambda (file)
-                        (not (or (string-match-p "/elpa/" file)      ; Ignore elpa/
-                                 (string-match-p "/straight/" file)  ; Ignore straight/
-                                 (string-match-p "/server/" file)    ; Ignore server/
-                                 )))))
-    ;; Fuzzy find and open the file
-    (selected-file (completing-read "Find config file: " all-files)))
+                     config-dir "\\.el$"
+                     nil
+                     (lambda (file)
+                       (not (or (string-match-p "/elpa/" file)
+                                (string-match-p "/straight/" file)
+                                (string-match-p "/server/" file))))))
+         (selected-file (completing-read "Find config file: " all-files)))
     (find-file selected-file)))
 
-
-(defun org-find-file ()
-  "Fuzzy search and open a file in `org-directory`."
+(defun studium/org-find-file ()
+  "Fuzzy search and open a file in `~/org`."
   (interactive)
   (find-file
    (completing-read "Find org file: "
                     (directory-files-recursively "~/org" "\\.org$"))))
 
+(defun studium/kill-char ()
+  "Kills a character adding it to killring, like x in vim"
+  (interactive)
+  (kill-region (point) (1+ (point))))
 
-(with-eval-after-load 'evil
-  (evil-define-key 'normal 'global (kbd "<leader> e") 'neotree-toggle)
+(defun studium/paste-below ()
+  "Vim p: paste after cursor (characterwise) or below current line (linewise)."
+  (interactive)
+  (when (null kill-ring)
+    (user-error "Kill ring is empty"))
+  (let ((text (current-kill 0)))
+    (cond
+     ;; Active region: replace selection, old selection → kill-ring
+     ((use-region-p)
+      (let ((beg (region-beginning)))
+        (kill-region (region-beginning) (region-end))
+        (insert text)
+        (goto-char beg)))
+     ;; Linewise: paste below current line, cursor to first non-blank
+     ((string-suffix-p "\n" text)
+      (let* ((content (substring text 0 (1- (length text))))
+             (target nil))
+        (end-of-line)
+        (insert "\n")
+        (setq target (point))
+        (insert content)
+        (goto-char target)
+        (back-to-indentation)))
+     ;; Characterwise: paste after cursor, cursor on last pasted char
+     (t
+      (unless (or (eobp) (eolp))
+        (forward-char 1))
+      (insert text)
+      (backward-char 1)))))
 
-  ;; FILES
-  (evil-define-key 'normal 'global (kbd "<leader> w") 'save-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> SPC") 'fuzzy-find-files-in-directory)
-  (evil-define-key 'normal 'global (kbd "<leader> f f") 'find-file)
-  (evil-define-key 'normal 'global (kbd "<leader> f g") 'grep-current-directory)
-  (evil-define-key 'normal 'global (kbd "<leader> f r") 'recentf-open-files)
-  (evil-define-key 'normal 'global (kbd "<leader> f d") 'dired)
-  (evil-define-key 'normal 'global (kbd "<leader> f p") 'open-personal-config)
+(defun studium/paste-above ()
+  "Vim P: paste before cursor (characterwise) or above current line (linewise)."
+  (interactive)
+  (when (null kill-ring)
+    (user-error "Kill ring is empty"))
+  (let ((text (current-kill 0)))
+    (cond
+     ;; Active region: replace selection, old selection → kill-ring
+     ((use-region-p)
+      (let ((beg (region-beginning)))
+        (kill-region (region-beginning) (region-end))
+        (insert text)
+        (goto-char beg)))
+     ;; Linewise: paste above current line, cursor to first non-blank
+     ((string-suffix-p "\n" text)
+      (let* ((content (substring text 0 (1- (length text))))
+             (target nil))
+        (beginning-of-line)
+        (setq target (point))
+        (insert content "\n")
+        (goto-char target)
+        (back-to-indentation)))
+     ;; Characterwise: paste before cursor, cursor on last pasted char
+     (t
+      (insert text)
+      (backward-char 1)))))
 
-  ;; BUFFERS
-  (evil-define-key 'normal 'global (kbd "<leader> b b") 'consult-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b q") 'kill-current-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b s") 'save-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b c") 'outline-hide-sublevels)
-  (evil-define-key 'normal 'global (kbd "<leader> b e") 'outline-show-all)
-  (evil-define-key 'normal 'global (kbd "<leader> <tab>") 'switch-to-next-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> S-<tab>") 'switch-to-prev-buffer)
+;; --- Meow Setup ---
 
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-colemak-dh)
 
-  ;; PROJECTS
-  (evil-define-key 'normal 'global (kbd "<leader> p p") 'project-switch-project)
-  (evil-define-key 'normal 'global (kbd "<leader> p f") 'project-find-file)
-  (evil-define-key 'normal 'global (kbd "<leader> p b") 'consult-project-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> p k") 'project-kill-buffers)
+  (meow-leader-define-key
+   '("?" . meow-cheatsheet)
+   
+   ;; --- Doom-style File/Buffer Bindings ---
+   '("SPC" . studium/fuzzy-find-files-in-directory)
+   '("." . embark-act)
+   '("w" . save-buffer)
+   '("u" . undo-tree-visualize)
+   '("/" . consult-line)
+   '("e" . neotree-toggle)
 
-  ;; SEARCH
-  (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-find)
-  (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-ripgrep)
-  (evil-define-key 'normal 'global (kbd "<leader> /") 'consult-line)
+   ;; Files (f)
+   '("f f" . find-file)
+   '("f r" . recentf-open-files)
+   '("f d" . dired)
+   '("f g" . studium/grep-current-directory)
+   '("f p" . studium/open-personal-config)
 
-  ;; HELP
-  (evil-define-key 'normal 'global (kbd "<leader> h f") 'describe-function)
-  (evil-define-key 'normal 'global (kbd "<leader> h v") 'describe-variable)
-  (evil-define-key 'normal 'global (kbd "<leader> h m") 'describe-mode)
-  (evil-define-key 'normal 'global (kbd "<leader> h k") 'describe-key)
+   ;; Buffers (b)
+   '("b b" . consult-buffer)
+   '("b q" . kill-current-buffer)
+   '("b s" . save-buffer)
+   '("b k" . (lambda () (interactive) (kill-buffer (current-buffer))))
+   '("b c" . outline-hide-sublevels)
+   '("b e" . outline-show-all)
 
-  ;; TABS / WINDOWS
-  (evil-define-key 'normal 'global (kbd "<C-tab>") 'tab-next)
-  (evil-define-key 'normal 'global (kbd "<C-S-iso-lefttab>") 'tab-previous)
-  ;; Fallback for some systems if the above doesn't catch Shift-Tab:
-  (evil-define-key 'normal 'global (kbd "<C-S-tab>") 'tab-previous)
+   ;; Projects (p)
+   '("p p" . project-switch-project)
+   '("p f" . project-find-file)
+   '("p b" . consult-project-buffer)
+   '("p k" . project-kill-buffers)
 
-  ;; DIAGNOSTICS / FLYMAKE
-  (evil-define-key 'normal 'global (kbd "] d") 'flymake-goto-next-error)
-  (evil-define-key 'normal 'global (kbd "[ d") 'flymake-goto-prev-error)
+   ;; Search (s)
+   '("s f" . consult-find)
+   '("s g" . consult-ripgrep)
+   '("s o" . universal-launcher--web-search)
 
-  ;; YANK / EMBARK
-  (evil-define-key 'normal 'global (kbd "<leader> .") 'embark-act)
+   ;; Org & Roam (o / n)
+   '("o a" . org-agenda)
+   '("o c" . org-capture)
+   '("o l" . org-store-link)
+   '("o f" . studium/org-find-file)
+   '("n r f" . org-roam-node-find)
+   '("n r i" . org-roam-node-insert)
+   '("n r c" . org-roam-capture)
+   '("n j" . org-roam-dailies-capture-today)
 
-  ;; UNDO / TREE
-  (evil-define-key 'normal 'global (kbd "<leader> u") 'undo-tree-visualize)
+   ;; LSP (l)
+   '("l f" . lsp-format-buffer)
+   '("l r" . lsp-rename)
+   '("l a" . lsp-execute-code-action)
 
-  ;; ORG + ORG-ROAM
-  (evil-define-key 'normal 'global (kbd "<leader> o a") 'org-agenda)
-  (evil-define-key 'normal 'global (kbd "<leader> o c") 'org-capture)
-  (evil-define-key 'normal 'global (kbd "<leader> o l") 'org-store-link)
-  (evil-define-key 'normal 'global (kbd "<leader> o f") 'org-find-file)
-  (evil-define-key 'normal 'global (kbd "<leader> o r f") 'org-roam-node-find)
-  (evil-define-key 'normal 'global (kbd "<leader> o r i") 'org-roam-node-insert)
-  (evil-define-key 'normal 'global (kbd "<leader> o r g") 'org-roam-graph)
-  (evil-define-key 'normal 'global (kbd "<leader> o r c") 'org-roam-capture)
-  (evil-define-key 'normal 'global (kbd "<leader> o r d t") 'org-roam-dailies-goto-today)
-  (evil-define-key 'normal 'global (kbd "<leader> o r d c") 'org-roam-dailies-capture-date)
+   ;; Help (h)
+   '("h f" . describe-function)
+   '("h v" . describe-variable)
+   '("h k" . describe-key)
+   '("h m" . describe-mode)
 
-  ;; LSP
-  (evil-define-key 'normal 'global (kbd "g d") 'lsp-find-definition)
-  (evil-define-key 'normal 'global (kbd "g r") 'lsp-find-references)
-  (evil-define-key 'normal 'global (kbd "K") 'lsp-ui-doc-glance)
-  (evil-define-key 'normal 'global (kbd "<leader> l f") 'lsp-format-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> l r") 'lsp-rename)
-  (evil-define-key 'normal 'global (kbd "<leader> l a") 'lsp-execute-code-action)
+   ;; Git (g)
+   '("g" . magit-status)
 
-  ;; ORG LOCAL LEADER (SPC m)
-  (with-eval-after-load 'org
-    (evil-define-key '(normal visual) org-mode-map
-      (kbd "<leader> m x c") 'org-toggle-checkbox
-      (kbd "<leader> m x i") 'org-toggle-item
-      (kbd "<leader> m x h") 'org-toggle-heading
+   ;; Workspaces/Tabs (<TAB>)
+   '("<TAB> n" . +workspace/new)
+   '("<TAB> d" . +workspace/delete)
+   '("<TAB> ." . +workspace/switch-to)
+   '("<TAB> [" . tab-bar-switch-to-prev-tab)
+   '("<TAB> ]" . tab-bar-switch-to-next-tab)
 
-      (kbd "<leader> m t t") 'org-todo
-      (kbd "<leader> m t s") 'org-schedule
-      (kbd "<leader> m t d") 'org-deadline
+   ;; --- Org Local Leader (mapped to SPC m) ---
+   '("m t t" . org-todo)
+   '("m t s" . org-schedule)
+   '("m t d" . org-deadline)
+   '("m l i" . org-insert-link)
+   '("m l o" . org-open-at-point)
+   '("m c i" . org-clock-in)
+   '("m c o" . org-clock-out)
+   '("m x c" . org-toggle-checkbox))
 
-      (kbd "<leader> m p a") 'org-priority-up
-      (kbd "<leader> m p d") 'org-priority-down
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("1" . meow-expand-1)
+   '("2" . meow-expand-2)
+   '("3" . meow-expand-3)
+   '("4" . meow-expand-4)
+   '("5" . meow-expand-5)
+   '("6" . meow-expand-6)
+   '("7" . meow-expand-7)
+   '("8" . meow-expand-8)
+   '("9" . meow-expand-9)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . (lambda () (interactive) (end-of-line) (meow-insert)))
+   '("b" . meow-back-word)
+   '("c" . meow-change)
+   '("d" . meow-clipboard-kill)
+   '("f" . flash-jump)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("i" . meow-insert)
+   '("j" . meow-join)
+   '("m" . meow-mark-word)
+   '("o" . meow-open-below)
+   '("O" . meow-open-above)
+   '("p" . studium/paste-below)
+   '("P" . studium/paste-above)
+   '("r" . meow-replace)
+   '("s" . meow-change-char)
+   '("u" . undo-tree-undo)
+   '("v" . meow-search)
+   '("w" . meow-next-word)
+   '("x" . meow-line)
+   '("X" . studium/kill-char)
+   '("y" . meow-clipboard-save)
+   
+   ;; LSP / Navigation (replacing Evil 'gd', 'K', etc.)
+   '("g d" . lsp-find-definition)
+   '("g r" . lsp-find-references)
+   '("K" . lsp-ui-doc-glance)
+   '("]" . flymake-goto-next-error)
+   '("[" . flymake-goto-prev-error)
 
-      (kbd "<leader> m r .") '+org/refile-to-current-file
-      (kbd "<leader> m r c") '+org/refile-to-running-clock
-      (kbd "<leader> m r l") '+org/refile-to-last-location
-      (kbd "<leader> m r f") '+org/refile-to-file
-      (kbd "<leader> m r o") '+org/refile-to-other-window
-      (kbd "<leader> m r O") '+org/refile-to-other-buffer
-      (kbd "<leader> m r v") '+org/refile-to-visible
-      (kbd "<leader> m r r") 'org-refile
-      (kbd "<leader> m r R") 'org-refile-reverse
+   ;; Folds
+   '("z o" . kirigami-open-fold)
+   '("z c" . kirigami-close-fold)))
 
-      (kbd "<leader> m c c") 'org-clock-cancel
-      (kbd "<leader> m c i") 'org-clock-in
-      (kbd "<leader> m c o") 'org-clock-out
+;; Meow
+(use-package meow
+  :demand t
+  :config
+  (meow-setup)
+  (meow-global-mode 1)
+  ;; Keep your custom things
+  (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
+  (setq meow-char-thing-table 
+        '((?\( . round) (?\[ . square) (?\{ . curly) (?w . window) (?b . buffer) (?l . line))))
 
-      (kbd "<leader> m s n") 'org-narrow-to-subtree
-      (kbd "<leader> m s w") 'widen
-
-      (kbd "<leader> m l i") 'org-insert-link
-      (kbd "<leader> m l o") 'org-open-at-point)))
-
-;; WHICH-KEY DESCRIPTIONS
-(with-eval-after-load 'which-key
-  (which-key-add-key-based-replacements
-    "SPC q" "quit"
-    "SPC w" "save file"
-
-    "SPC f" "files"
-    "SPC f f" "find file"
-    "SPC f r" "recent files"
-    "SPC f d" "dired"
-    "SPC f p" "personal config"
-
-    "SPC b" "buffers"
-    "SPC b b" "list buffers"
-    "SPC b d" "kill buffer"
-    "SPC b s" "save buffer"
-    "SPC b c" "collapse outline"
-    "SPC b e" "expand outline"
-
-    "SPC p" "projects"
-    "SPC p p" "switch project"
-    "SPC p f" "find file in project"
-    "SPC p b" "project buffers"
-    "SPC p k" "kill project buffers"
-
-    "SPC s" "search"
-    "SPC s f" "find file"
-    "SPC s g" "grep"
-    "SPC s r" "ripgrep"
-    "SPC /" "search line"
-
-    "SPC g" "git"
-    "SPC g g" "magit status"
-    "SPC g l" "magit log"
-    "SPC g d" "magit diff"
-
-    "SPC h" "help"
-    "SPC h f" "describe function"
-    "SPC h v" "describe variable"
-    "SPC h m" "describe mode"
-    "SPC h k" "describe key"
-
-    "SPC u" "undo tree"
-
-    "SPC x" "misc commands"
-    "SPC x x" "flymake"
-
-    "SPC o" "org"
-    "SPC o a" "agenda"
-    "SPC o c" "capture"
-    "SPC o l" "store link"
-    "SPC o f" "open file"
-    "SPC o r" "org-roam"
-    "SPC o r f" "find node"
-    "SPC o r i" "insert node"
-    "SPC o r g" "graph"
-    "SPC o r c" "capture node"
-    "SPC o r d t" "dailies today"
-    "SPC o r d c" "dailies capture"
-
-    ;; Local leader (SPC m)
-    "SPC m" "local-leader"
-    "SPC m t" "todo"
-    "SPC m p" "priority"
-    "SPC m r" "refile"
-    "SPC m c" "capture/clock"
-    "SPC m s" "subtree"
-    "SPC m l" "links"))
-
-;; -------------------------------
-;; EXTRA KEYMAPS
-;; -------------------------------
-; Make `ESC` quit prompts
+(global-set-key (kbd "C-s") #'save-buffer)
+(global-set-key (kbd "C-v") #'clipboard-yank)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
 
 (provide 'keymaps)
 ;;; keymaps.el ends here
-
