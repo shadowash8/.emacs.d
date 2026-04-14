@@ -71,5 +71,12 @@
   :ensure t
   :init (global-flycheck-mode))
 
+;; Typescript
+(use-package eglot-typescript-preset
+  :ensure t
+  :after eglot
+  :config
+  (eglot-typescript-preset-setup))
+
 (provide 'lsp)
 ;;; lsp.el ends here

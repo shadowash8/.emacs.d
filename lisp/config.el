@@ -47,11 +47,15 @@
   ;; Disable Scrollbar (Frame-alist)
   (setq default-frame-alist '((vertical-scroll-bars . nil)))
 
+  ;; Tab Bar New Tab
+  (setq tab-bar-new-tab-choice (lambda () (get-buffer-create "*dashboard*")))
+
   :init
   (tool-bar-mode -1)
   (menu-bar-mode -1)
 
   (global-hl-line-mode -1)
+  (global-visual-line-mode 1)
   (global-auto-revert-mode 1)
   (indent-tabs-mode -1)
   (recentf-mode 1)

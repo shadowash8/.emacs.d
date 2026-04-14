@@ -67,6 +67,7 @@
   (doom-modeline-buffer-name t)
   (doom-modeline-vcs-max-length 25)
   :config
+  (setq doom-modeline-time t)
   (if ek-use-nerd-fonts
       (setq doom-modeline-icon t)
     (setq doom-modeline-icon nil))
