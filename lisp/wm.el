@@ -8,26 +8,26 @@
   :ensure t
   :bind (:map ewm-mode-map
 	   ;; Window Manager
-       ("s-d" . consult-buffer)
+       ("s-s" . consult-buffer)
+       ("s-c" . tab-close)
        ("s-q" . kill-buffer-and-window)
-       ("s-S-q" . tab-close)
-	   ("s-j" . tab-new)
-	   ("C-q" . q)
-	   ("s-m" . ewm-left)
-	   ("s-n" . ewm-down)
-	   ("s-e" . ewm-up)
-	   ("s-i" . ewm-right)
+	   ("s-b" . tab-new)
+	   ("C-q" . delete-window)
+	   ("s-m" . windmove-left)
+	   ("s-n" . windmove-down)
+	   ("s-e" . windmove-up)
+	   ("s-i" . windmove-right)
 	   ("s-z" . split-window-right)
 	   ("s-k" . split-window-below)
 	   ("s-a" . ewm-toggle-fullscreen)
+	   ("s--" . evil-window-increase-width)
+	   ("s-=" . evil-window-decrease-width)
 	   
-       ("s-S-q" . (lambda () (interactive) (start-process "pkill" nil "pkill emacs")))
-
 	   ;; Applications
        ("s-<return>" . (lambda () (interactive) (start-process "foot" nil "foot")))
        ("s-SPC" . xdg-launcher-run-app)
        ("s-v" . (lambda () (interactive) (start-process-shell-command "cliphist" nil "cliphist list | rofi -dmenu | cliphist decode | wl-copy")))
-       ("s-b" . (lambda () (interactive) (start-process "zen-browser" nil "helium-browser")))
+       ("s-j" . (lambda () (interactive) (start-process "glide-bin" nil "glide-bin")))
        ("s-f" . (lambda () (interactive) (start-process "thunar" nil "thunar")))
        ("s-u" . ewm-lock-session)
        ("s-p" . (lambda () (interactive) (start-process-shell-command "connect" nil "connect")))
@@ -58,6 +58,7 @@
         (mouse :accel-profile "flat")
         (trackpoint :accel-speed 0.5)))
   
+  (setq display-time t)
   (setq ewm-focus-follows-mouse t)
   (setq ewm-mouse-follows-focus f)
 
