@@ -184,6 +184,23 @@
 (use-package xdg-launcher
   :straight '(xdg-launcher :host github :repo "emacs-exwm/xdg-launcher"))
 
+(use-package osm
+  :bind ("C-c k" . osm-prefix-map) ;; Alternatives: `osm-home' or `osm'
+
+  :custom
+  (osm-default-server 'default) ;; Configure the tile server
+  (osm-default-zoom 15)         ;; Default zoom level
+  (osm-copyright t)             ;; Display the copyright information
+  (osm-home (list 0 0 3))       ;; Home, configure `calendar-latitude/longitude' instead
+
+  :config
+  (add-hook 'osm-mode-hook (lambda () 
+  (visual-line-mode -1)          ;; Kill the wrapping
+  (display-line-numbers-mode -1) ;; Kill the numbers
+  (setq-local line-spacing nil)  ;; Ensure tiles touch
+  (setq-local window-divider-mode nil))) ;; Clean up the edges
+)
+
 (provide 'ui)
 
 ;;; ui.el ends here

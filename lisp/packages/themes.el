@@ -9,7 +9,7 @@
 ;; Xresources Theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
-(load-theme 'xresources t)
+(load-theme 'dank-emacs t)
 
 (defun my/reload-xresources-theme ()
   "Force Emacs to forget the theme and reload it from disk."

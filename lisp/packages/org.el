@@ -53,6 +53,7 @@
            :prepend t)))
 
   (setq org-clock-persist 'history)
+  (setq org-preview-latex-default-process 'dvipng)
   (org-clock-persistence-insinuate))
 
 
@@ -76,8 +77,8 @@
   ;; Capture Templates
   (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
-         :target (file+head "${slug}.org" ; <--- Change this line
-                            "#+title: ${title}\n#+created: %U\n")
+         :target (file+head "${slug}.org"
+                            "#+TITLE: ${title}\n#+CREATED: %U\n")
          :unnarrowed t)))
 
   ;; Dailies Configuration
@@ -86,7 +87,7 @@
       '(("d" "default" plain
          (file "templates/dailies.org")
          :target (file+head "%<%Y-%m-%d>.org"
-                            "#+title: %<%Y-%m-%d>\n")
+                            "#+TITLE: %<%Y-%m-%d>\n")
          :unnarrowed t))))
 
 ;; HELPER FUNCTIONS
