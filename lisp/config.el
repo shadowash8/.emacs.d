@@ -32,7 +32,7 @@
 
   :config
   ;; Fonts
-  (set-face-attribute 'default nil :family "Monospace" :height 135)
+  (set-face-attribute 'default nil :family "monospace" :height 145)
 
   ;; Disable Scrollbar (Frame-alist)
   (setq default-frame-alist '((vertical-scroll-bars . nil)))

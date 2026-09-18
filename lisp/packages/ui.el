@@ -78,7 +78,7 @@
   (dashboard-setup-startup-hook))
 
 ;; Config
-(setq dashboard-startup-banner "~/.emacs.d/icons/freedom.txt")
+(setq dashboard-startup-banner "~/.emacs.d/icons/freedom.png")
 (setq dashboard-image-banner-max-height 200)
 (setq dashboard-display-icons-p t)     ; display icons on both GUI and terminal
 (setq dashboard-icon-type 'nerd-icons) ; use `nerd-icons' package

@@ -41,4 +41,5 @@ gnus.el
 custom-vars.el
 secrets.el
 ielm-history.eld
-
+.lsp-session
+.lsp-session-v1

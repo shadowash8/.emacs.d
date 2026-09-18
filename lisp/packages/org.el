@@ -24,9 +24,8 @@
         (append
          '("~/Org/inbox.org"
            "~/Org/personal.org"
-           "~/Org/people.org"
-           "~/Org/school.org"
-           "~/Org/studies.org")
+           "~/Org/college/timetable.org"
+           "~/Org/people.org")
          (directory-files-recursively "~/Org/projects" "\\.org$")))
 
   ;; TODO keywords
