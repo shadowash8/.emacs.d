@@ -24,7 +24,7 @@
         (append
          '("~/Org/inbox.org"
            "~/Org/personal.org"
-           "~/Org/college/timetable.org"
+           "~/Org/college/sem1/index.org"
            "~/Org/people.org")
          (directory-files-recursively "~/Org/projects" "\\.org$")))
 
